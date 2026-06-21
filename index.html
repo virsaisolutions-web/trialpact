@@ -1,0 +1,4362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrialPact by VirsAI — Clinical Trial Contract Intelligence</title>
+  <meta name="description" content="AI-native contract intelligence for emerging biotech sponsors. Cut CTA negotiation from 90 days to weeks. Built for Phase 1–3 companies. By VirsAI.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="TrialPact by VirsAI">
+  <meta property="og:description" content="AI-native clinical trial contract intelligence for emerging biotech. By VirsAI.">
+  <meta property="og:url" content="https://www.virsaisolutions.com/">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://www.virsaisolutions.com/">
+  <!-- Favicon: TP monogram -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230D1117'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='Inter,sans-serif' font-weight='700' font-size='14' fill='%232563EB'%3ETP%3C/text%3E%3C/svg%3E">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* CSS Custom Properties for design system */
+    :root {
+      --ink: #0D1117;        /* Near-black, primary text + nav bg */
+      --slate: #1C2333;      /* Card backgrounds, section dividers */
+      --steel: #334155;      /* Secondary text, borders */
+      --frost: #F0F4F8;      /* Light section backgrounds */
+      --white: #FFFFFF;
+      --signal: #2563EB;     /* Primary CTA — precise, clinical, trustworthy */
+      --signal-dim: #1D4ED8; /* Hover state */
+      --emerald: #059669;    /* Success / AI accepted states */
+      --amber: #D97706;      /* Warning / flagged states */
+      --red: #DC2626;        /* Risk flags */
+      
+      /* Transparency helpers */
+      --signal-rgb: 37, 99, 235;
+      --amber-rgb: 217, 119, 6;
+      --red-rgb: 220, 38, 38;
+      
+      /* Layout & Spacing */
+      --max-width: 1200px;
+      --font-display: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    /* Core resets */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--white);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    body {
+      background-color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Accessibility focus styles */
+    *:focus-visible {
+      outline: 2px solid var(--signal);
+      outline-offset: 2px;
+    }
+
+    /* Screen-reader utility */
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    /* Layout & Base Elements */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    section {
+      padding: 80px 0;
+      position: relative;
+    }
+
+    /* Sticky Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      background-color: var(--ink);
+      transition: border-bottom 0.2s ease, backdrop-filter 0.2s ease, background-color 0.2s ease;
+    }
+
+    header.scrolled {
+      border-bottom: 1px solid var(--steel);
+      backdrop-filter: blur(8px);
+      background-color: rgba(13, 17, 23, 0.85);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .logo-lockup {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--signal);
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .logo-text {
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.025em;
+    }
+
+    /* Vertical rule between product and parent brand */
+    .logo-rule {
+      width: 1px;
+      height: 18px;
+      background: linear-gradient(to bottom, transparent, var(--steel), transparent);
+      margin: 0 14px;
+      flex-shrink: 0;
+    }
+
+    /* The 'by VirsAI' block — completely separate from logo anchor */
+    .logo-brand-block {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      text-decoration: none;
+      line-height: 1;
+    }
+
+    .logo-by {
+      font-family: var(--font-body);
+      font-size: 0.6875rem;
+      font-weight: 400;
+      color: #4A5568;
+      letter-spacing: 0.04em;
+      text-transform: lowercase;
+      flex-shrink: 0;
+    }
+
+    .logo-virsai {
+      font-family: var(--font-display);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #60A5FA;
+      letter-spacing: -0.01em;
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+
+    .logo-brand-block:hover .logo-virsai {
+      color: #93C5FD;
+      text-shadow: 0 0 12px rgba(96, 165, 250, 0.35);
+    }
+
+    .logo-brand-block:hover .logo-by {
+      color: #718096;
+    }
+
+    /* Nav Links & Right Elements */
+    .nav-menu-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-menu {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        list-style: none;
+      }
+    }
+
+    .nav-link {
+      color: var(--steel);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 24px;
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+
+    .btn-nav-cta {
+      display: none;
+      height: 38px;
+      padding: 0 18px;
+      font-size: 0.875rem;
+    }
+
+    @media (min-width: 768px) {
+      .btn-nav-cta {
+        display: inline-flex;
+      }
+    }
+
+    .btn-primary {
+      background-color: var(--signal);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--signal-dim);
+    }
+
+    /* Mobile Hamburger Menu */
+    .hamburger {
+      display: inline-flex;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: var(--white);
+      z-index: 110;
+      position: relative;
+    }
+
+    @media (min-width: 1024px) {
+      .hamburger {
+        display: none;
+      }
+    }
+
+    .hamburger svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.3s ease;
+    }
+
+    /* Mobile Menu Overlay */
+    .mobile-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: var(--ink);
+      z-index: 105;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 28px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-overlay .nav-link {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--steel);
+    }
+
+    .mobile-overlay .nav-link:hover {
+      color: var(--white);
+    }
+
+    .mobile-overlay .btn-mobile-cta {
+      margin-top: 16px;
+      height: 48px;
+      padding: 0 32px;
+      font-size: 1rem;
+    }
+
+    body.overlay-open {
+      overflow: hidden;
+    }
+
+    /* Hamburger animation states */
+    .hamburger.open svg {
+      transform: rotate(90deg);
+    }
+
+    .hamburger.open .line-1 {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .hamburger.open .line-2 {
+      opacity: 0;
+    }
+
+    .hamburger.open .line-3 {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    .hamburger .line-1,
+    .hamburger .line-2,
+    .hamburger .line-3 {
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      transform-origin: center;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding-top: 120px;
+      padding-bottom: 80px;
+      background-color: var(--white);
+      overflow: hidden;
+    }
+
+    @media (min-width: 1024px) {
+      .hero {
+        padding-top: 160px;
+        padding-bottom: 100px;
+      }
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 55fr 45fr;
+        gap: 64px;
+      }
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--signal);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 2.625rem;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 20px;
+      letter-spacing: -0.03em;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-headline {
+        font-size: 4rem;
+      }
+    }
+
+    .hero-subhead {
+      font-size: 1.125rem;
+      line-height: 1.6;
+      color: var(--steel);
+      margin-bottom: 32px;
+      max-width: 520px;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-subhead {
+        font-size: 1.25rem;
+      }
+    }
+
+    /* Stats Row */
+    .stats-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 40px;
+      border-top: 1px solid var(--frost);
+      border-bottom: 1px solid var(--frost);
+      padding: 24px 0;
+      width: 100%;
+    }
+
+    .stat-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stat-item:not(:last-child) {
+      border-right: 1px solid var(--frost);
+      padding-right: 16px;
+    }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.75rem;
+      line-height: 1;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    @media (min-width: 768px) {
+      .stat-num {
+        font-size: 2.25rem;
+      }
+    }
+
+    .stat-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--steel);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1.4;
+    }
+
+    /* CTA Row */
+    .cta-row-container {
+      width: 100%;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .btn-hero-primary {
+      height: 48px;
+      padding: 0 28px;
+      font-size: 1rem;
+      border-radius: 24px;
+    }
+
+    .btn-hero-secondary {
+      height: 48px;
+      padding: 0 28px;
+      font-size: 1rem;
+      border-radius: 24px;
+      background-color: transparent;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+    }
+
+    .btn-hero-secondary:hover {
+      background-color: var(--frost);
+    }
+
+    .cta-tagline {
+      font-size: 0.8125rem;
+      color: var(--steel);
+    }
+
+    /* Right animated contract card */
+    .hero-card-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .contract-card {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      font-family: var(--font-mono);
+      min-height: 380px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--steel);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card-filename {
+      font-size: 0.8125rem;
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .card-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--emerald);
+      font-weight: 500;
+      font-family: var(--font-body);
+    }
+
+    .pulsing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--emerald);
+      display: inline-block;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .pulsing-dot.blue {
+      background-color: var(--signal);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.85); opacity: 0.4; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.85); opacity: 0.4; }
+    }
+
+    .clause-block-animated {
+      font-size: 0.8125rem;
+      color: var(--frost);
+      line-height: 1.6;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .typing-cursor::after {
+      content: '|';
+      display: inline;
+      color: var(--signal);
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 600;
+      width: fit-content;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .badge.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .badge-amber {
+      background-color: rgba(217, 119, 6, 0.15);
+      color: #FBBF24;
+      border: 1px solid rgba(217, 119, 6, 0.3);
+    }
+
+    .badge-emerald {
+      background-color: rgba(5, 150, 105, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(5, 150, 105, 0.3);
+    }
+
+    .pulsing-ellipsis::after {
+      content: '...';
+      display: inline-block;
+      animation: ellipsis-pulse 1.4s infinite;
+      width: 1.25em;
+      text-align: left;
+    }
+
+    @keyframes ellipsis-pulse {
+      0% { opacity: 0.2; }
+      20% { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+
+    /* Problem Section */
+    .problem-section {
+      background-color: var(--frost);
+      padding: 80px 0;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 2rem;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 16px;
+      text-align: center;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      letter-spacing: -0.02em;
+    }
+
+    @media (min-width: 768px) {
+      .section-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    .section-subtitle {
+      font-size: 1.125rem;
+      color: var(--steel);
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 56px;
+      line-height: 1.6;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 1024px) {
+      .problem-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .problem-card {
+      background-color: var(--white);
+      border: 1px solid var(--steel);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .problem-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .problem-card.border-red {
+      border-top: 4px solid var(--red);
+    }
+
+    .problem-card.border-amber {
+      border-top: 4px solid var(--amber);
+    }
+
+    .card-icon {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      width: 44px;
+      height: 44px;
+    }
+
+    .card-icon.red {
+      background-color: rgba(220, 38, 38, 0.1);
+      color: var(--red);
+    }
+
+    .card-icon.amber {
+      background-color: rgba(217, 119, 6, 0.1);
+      color: var(--amber);
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-body {
+      font-size: 0.9375rem;
+      color: var(--steel);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 16px;
+      background-color: var(--frost);
+      color: var(--steel);
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+
+    /* Simulation Section */
+    .simulation-section {
+      background-color: var(--ink);
+      color: var(--white);
+      padding: 80px 0;
+    }
+
+    .sim-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .sim-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--signal);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .sim-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 2rem;
+      color: var(--white);
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    @media (min-width: 768px) {
+      .sim-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    .sim-subtitle {
+      font-size: 1.125rem;
+      color: var(--steel);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Tab Bar */
+    .tab-bar-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+
+    .tab-bar {
+      display: inline-flex;
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      border-radius: 32px;
+      padding: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--steel);
+      padding: 10px 24px;
+      border-radius: 28px;
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn[aria-selected="true"] {
+      background-color: var(--white);
+      color: var(--ink);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .tab-btn:hover:not([aria-selected="true"]) {
+      color: var(--white);
+    }
+
+    .tab-panel {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* TAB 1: AI CONTRACT REVIEW LAYOUT */
+    .review-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+      .review-grid {
+        grid-template-columns: 55fr 45fr;
+      }
+    }
+
+    /* Left Panel: Contract Document Viewer */
+    .doc-viewer {
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .doc-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--steel);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .doc-filename {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .doc-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background-color: rgba(37, 99, 235, 0.15);
+      color: #60A5FA;
+      border: 1px solid rgba(37, 99, 235, 0.3);
+    }
+
+    .doc-scroll-panel {
+      max-height: 480px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--frost);
+      padding-right: 8px;
+      margin-bottom: 24px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--steel) var(--ink);
+    }
+
+    .doc-scroll-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+    .doc-scroll-panel::-webkit-scrollbar-track {
+      background: var(--ink);
+      border-radius: 4px;
+    }
+    .doc-scroll-panel::-webkit-scrollbar-thumb {
+      background: var(--steel);
+      border-radius: 4px;
+    }
+
+    .clause-block {
+      border-left: 3px solid var(--steel);
+      padding-left: 16px;
+      margin-bottom: 24px;
+      transition: border-color 0.3s ease;
+      white-space: pre-line;
+    }
+
+    .clause-block.active-amber {
+      border-left-color: var(--amber) !important;
+    }
+
+    .clause-block.active-red {
+      border-left-color: var(--red) !important;
+    }
+
+    .clause-block.active-emerald {
+      border-left-color: var(--emerald) !important;
+    }
+
+    /* Highlight spans */
+    .highlight-amber {
+      background-color: rgba(217, 119, 6, 0.2);
+      border-bottom: 1px solid var(--amber);
+      color: var(--white);
+      transition: background-color 0.3s ease;
+    }
+
+    .highlight-red {
+      background-color: rgba(220, 38, 38, 0.2);
+      border-bottom: 1px solid var(--red);
+      color: var(--white);
+      transition: background-color 0.3s ease;
+    }
+
+    /* Dim inactive clause highlights slightly */
+    .clause-block:not(.active-amber) .highlight-amber,
+    .clause-block:not(.active-red) .highlight-red {
+      background-color: transparent;
+      border-bottom-color: rgba(255,255,255,0.1);
+      color: var(--frost);
+    }
+
+    .doc-progress-container {
+      border-top: 1px solid var(--steel);
+      padding-top: 20px;
+      margin-bottom: 16px;
+    }
+
+    .doc-progress-text {
+      font-size: 0.8125rem;
+      color: var(--steel);
+      margin-bottom: 8px;
+      display: block;
+      font-weight: 500;
+    }
+
+    .doc-progress-track {
+      height: 6px;
+      background-color: var(--ink);
+      border-radius: 3px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .doc-progress-bar {
+      height: 100%;
+      background-color: var(--signal);
+      width: 50%;
+      border-radius: 3px;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-analyze {
+      width: 100%;
+      height: 44px;
+      font-size: 0.9375rem;
+      border-radius: 6px;
+      border: 1px solid var(--steel);
+      background-color: transparent;
+      color: var(--white);
+    }
+
+    .btn-analyze:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: var(--white);
+    }
+
+    /* Right Panel: AI Analysis */
+    .analysis-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .analysis-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      color: var(--white);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .analysis-cards-wrapper {
+      transition: opacity 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .analysis-card {
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.3s ease, opacity 0.3s ease;
+    }
+
+    .analysis-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .analysis-badge {
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-theme-amber {
+      background-color: rgba(217, 119, 6, 0.15);
+      color: #FBBF24;
+    }
+
+    .badge-theme-red {
+      background-color: rgba(220, 38, 38, 0.15);
+      color: #F87171;
+    }
+
+    .badge-theme-emerald {
+      background-color: rgba(5, 150, 105, 0.15);
+      color: #34D399;
+    }
+
+    .analysis-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--steel);
+      background-color: var(--ink);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .analysis-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .analysis-body {
+      font-size: 0.8125rem;
+      color: var(--steel);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .suggested-block {
+      background-color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .suggested-block.amber-border {
+      border-left: 3px solid var(--amber);
+      color: #FBBF24;
+    }
+
+    .suggested-block.red-border {
+      border-left: 3px solid var(--red);
+      color: #F87171;
+    }
+
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-suggested {
+      background-color: transparent;
+      border-width: 1px;
+      border-style: solid;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-suggested.amber {
+      border-color: var(--amber);
+      color: #FBBF24;
+    }
+
+    .btn-suggested.amber:hover {
+      background-color: rgba(217, 119, 6, 0.1);
+    }
+
+    .btn-suggested.red {
+      border-color: var(--red);
+      color: #F87171;
+    }
+
+    .btn-suggested.red:hover {
+      background-color: rgba(220, 38, 38, 0.1);
+    }
+
+    .link-action {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--signal);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .link-action:hover {
+      color: var(--white);
+      text-decoration: underline;
+    }
+
+    .analysis-stat-row {
+      display: flex;
+      gap: 16px;
+      font-size: 0.75rem;
+      color: var(--steel);
+      font-weight: 500;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 12px;
+    }
+
+    .analysis-summary-strip {
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .summary-text {
+      font-size: 0.8125rem;
+      color: var(--steel);
+      font-weight: 500;
+    }
+
+    .btn-ghost-signal {
+      background: transparent;
+      border: none;
+      color: var(--signal);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .btn-ghost-signal:hover {
+      color: var(--white);
+      text-decoration: underline;
+    }
+
+    /* Shimmer effect for simulation buttons */
+    .btn-suggested.loading {
+      position: relative;
+      overflow: hidden;
+      color: transparent !important;
+      border-color: var(--steel) !important;
+      pointer-events: none;
+    }
+
+    .btn-suggested.loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent 30%, rgba(255, 255, 255, 0.15) 50%, transparent 70%);
+      animation: shimmer-effect 0.8s infinite linear;
+    }
+
+    @keyframes shimmer-effect {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(50%); }
+    }
+
+    /* TAB 2: TEMPLATE LIBRARY LAYOUT */
+    .template-header-row {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 48px;
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      border-radius: 8px;
+      padding: 0 16px 0 44px;
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--signal);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--steel);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .filter-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-pill {
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      color: var(--steel);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill:hover {
+      color: var(--white);
+    }
+
+    .filter-pill.active {
+      background-color: var(--signal);
+      color: var(--white);
+      border-color: var(--signal);
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .template-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .template-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .template-card {
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .template-card:hover {
+      border-color: #475569;
+      transform: translateY(-2px);
+    }
+
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .contract-icon {
+      color: var(--signal);
+      display: flex;
+      align-items: center;
+    }
+
+    .phase-badge {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--steel);
+    }
+
+    .template-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      color: var(--white);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .tag-pill {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--steel);
+      background-color: var(--ink);
+      border: 1px solid var(--steel);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .template-meta {
+      font-size: 0.8125rem;
+      color: var(--steel);
+      margin-bottom: 20px;
+      margin-top: auto;
+    }
+
+    .btn-preview {
+      width: 100%;
+      height: 38px;
+      background-color: transparent;
+      border: 1px solid var(--signal);
+      color: var(--signal);
+      font-size: 0.8125rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-preview:hover {
+      background-color: var(--signal);
+      color: var(--white);
+    }
+
+    /* Template No Match State */
+    .no-match-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 48px 0;
+      border: 1px dashed var(--steel);
+      border-radius: 8px;
+    }
+
+    .no-match-text {
+      color: var(--steel);
+      font-size: 0.9375rem;
+      margin-bottom: 12px;
+    }
+
+    /* TEMPLATE MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-overlay.open .modal-card {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--steel);
+    }
+
+    .modal-header-title-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      color: var(--steel);
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .btn-close-modal:hover {
+      color: var(--white);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      background-color: var(--ink);
+    }
+
+    .modal-preview-text {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--frost);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 20px 24px;
+      border-top: 1px solid var(--steel);
+    }
+
+    .btn-modal-cta {
+      height: 38px;
+      padding: 0 16px;
+      font-size: 0.875rem;
+      border-radius: 6px;
+    }
+
+    .btn-modal-close {
+      height: 38px;
+      padding: 0 16px;
+      font-size: 0.875rem;
+      background: transparent;
+      border: 1px solid var(--steel);
+      color: var(--steel);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-modal-close:hover {
+      color: var(--white);
+      border-color: var(--white);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--slate);
+      border: 1px solid var(--steel);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      z-index: 1050;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Features Detail Section */
+    .features-detail-section {
+      background-color: var(--frost);
+      padding: 80px 0;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    @media (min-width: 1024px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .feature-card {
+      background-color: var(--white);
+      border: 1px solid var(--steel);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateY(20px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .feature-card-icon {
+      color: var(--signal);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feature-card-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card-body {
+      font-size: 0.9375rem;
+      color: var(--steel);
+      line-height: 1.6;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .feature-tag-pill {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--steel);
+      background-color: var(--frost);
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid rgba(51, 65, 85, 0.1);
+    }
+
+    /* Feature Plan Tier Legend */
+    .features-plan-legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      margin: 24px 0 0 0;
+      padding: 14px 20px;
+      background: var(--white);
+      border: 1px solid rgba(51, 65, 85, 0.12);
+      border-radius: 8px;
+    }
+
+    .plan-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--steel);
+      font-family: var(--font-body);
+    }
+
+    .plan-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .plan-core .plan-legend-dot { background-color: var(--signal); }
+    .plan-growth .plan-legend-dot { background-color: var(--emerald); }
+    .plan-scale .plan-legend-dot { background-color: var(--amber); }
+
+    /* Color-coded feature-tag-pills per tier */
+    .feature-tag-pill.tier-core {
+      color: var(--signal);
+      background-color: rgba(37, 99, 235, 0.07);
+      border-color: rgba(37, 99, 235, 0.2);
+    }
+    .feature-tag-pill.tier-growth {
+      color: var(--emerald);
+      background-color: rgba(5, 150, 105, 0.07);
+      border-color: rgba(5, 150, 105, 0.2);
+    }
+    .feature-tag-pill.tier-scale {
+      color: var(--amber);
+      background-color: rgba(217, 119, 6, 0.07);
+      border-color: rgba(217, 119, 6, 0.2);
+    }
+
+    .feature-mock-ui {
+      background-color: var(--ink);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      width: 100%;
+      margin: 16px 0;
+      box-sizing: border-box;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Widget 1: AI Redlining */
+    .mock-redline .line {
+      margin-bottom: 4px;
+    }
+    .mock-redline .del {
+      color: #f87171;
+      text-decoration: line-through;
+      background-color: rgba(239, 68, 68, 0.15);
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+    .mock-redline .ins {
+      color: #34d399;
+      background-color: rgba(16, 185, 129, 0.15);
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+    .mock-redline .consensus {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    .mock-redline .consensus-badge {
+      color: #60a5fa;
+      font-weight: 600;
+    }
+
+    /* Widget 2: Negotiation Memory */
+    .mock-memory-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+    .mock-memory-table th {
+      text-align: left;
+      color: #94a3b8;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 4px;
+      font-weight: 500;
+    }
+    .mock-memory-table td {
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .mock-memory-table tr:last-child td {
+      border-bottom: none;
+    }
+    .mock-memory-pill {
+      background-color: rgba(96, 165, 250, 0.15);
+      color: #60a5fa;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+    }
+
+    /* Widget 3: Budget & Contract Linkage */
+    .mock-linkage-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .mock-linkage-label {
+      color: #94a3b8;
+    }
+    .mock-linkage-value {
+      color: #f1f5f9;
+    }
+    .mock-linkage-warning {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 4px;
+      padding: 6px 10px;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: #fbbf24;
+    }
+
+    /* Widget 4: FMV Benchmarking */
+    .mock-fmv-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+    .mock-fmv-bar-container {
+      position: relative;
+      height: 6px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      margin: 8px 0 4px 0;
+    }
+    .mock-fmv-range {
+      position: absolute;
+      left: 30%;
+      width: 40%;
+      height: 100%;
+      background-color: rgba(16, 185, 129, 0.3);
+      border-radius: 3px;
+    }
+    .mock-fmv-marker {
+      position: absolute;
+      left: 82%;
+      top: -3px;
+      width: 12px;
+      height: 12px;
+      background-color: #ef4444;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+    .mock-fmv-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: #64748b;
+    }
+    .mock-fmv-alert {
+      color: #f87171;
+      font-size: 0.72rem;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Widget 5: Country-Specific Clause Intelligence */
+    .mock-country-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .mock-flag-emoji {
+      font-size: 1rem;
+    }
+    .mock-country-name {
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .mock-country-insert {
+      font-size: 0.75rem;
+      color: #a7f3d0;
+      border-left: 2px solid #34d399;
+      padding-left: 8px;
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* Widget 6: Pre-Signature Compliance */
+    .mock-compliance-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mock-compliance-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+    }
+    .mock-compliance-item.checked {
+      color: #34d399;
+    }
+    .mock-compliance-checkbox {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      border: 1px solid #34d399;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: bold;
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+    .mock-compliance-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 1px 5px;
+      background-color: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    /* How It Works Section */
+    .how-it-works-section {
+      background-color: var(--ink);
+      color: var(--white);
+      padding: 80px 0;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      margin-top: 56px;
+      margin-bottom: 56px;
+      position: relative;
+    }
+
+    @media (min-width: 1024px) {
+      .timeline {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 32px;
+      }
+
+      .timeline::before {
+        content: '';
+        position: absolute;
+        top: 24px;
+        left: 8%;
+        right: 8%;
+        height: 1px;
+        border-top: 1px dashed var(--steel);
+        z-index: 1;
+      }
+    }
+
+    .step-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-node {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--signal);
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.15);
+    }
+
+    .step-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--white);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .step-body {
+      font-size: 0.9375rem;
+      color: var(--steel);
+      line-height: 1.6;
+      max-width: 320px;
+    }
+
+    .how-cta-container {
+      text-align: center;
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .how-cta-text {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .btn-how-cta {
+      height: 48px;
+      padding: 0 32px;
+      font-size: 1rem;
+      border-radius: 24px;
+    }
+
+    /* Forms & Fields */
+    .form-group {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .form-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      height: 44px;
+      padding: 0 16px;
+      border: 1px solid var(--steel);
+      border-radius: 6px;
+      background-color: var(--white);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--signal);
+    }
+
+    textarea.form-control {
+      height: auto;
+      padding: 12px 16px;
+      resize: vertical;
+    }
+
+    .form-error-msg {
+      font-size: 0.8125rem;
+      color: var(--red);
+      font-weight: 500;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .form-control.invalid {
+      border-color: var(--red) !important;
+    }
+
+    /* Waitlist Section */
+    .waitlist-section {
+      background-color: var(--slate);
+      padding: 80px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .waitlist-card {
+      background-color: var(--white);
+      width: 100%;
+      max-width: 640px;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    .form-header {
+      margin-bottom: 32px;
+    }
+
+    .form-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: var(--ink);
+      margin-top: 8px;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    @media (min-width: 768px) {
+      .form-title {
+        font-size: 2rem;
+      }
+    }
+
+    .form-subtitle {
+      font-size: 1rem;
+      color: var(--steel);
+      line-height: 1.5;
+    }
+
+    .btn-submit {
+      width: 100%;
+      height: 52px;
+      border-radius: 8px;
+      background-color: var(--signal);
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--signal-dim);
+    }
+
+    .btn-submit:disabled {
+      background-color: var(--steel);
+      cursor: not-allowed;
+    }
+
+    .spinner-svg {
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .form-submit-error {
+      background-color: rgba(220, 38, 38, 0.05);
+      border: 1px solid var(--red);
+      color: var(--red);
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      margin-bottom: 20px;
+      text-align: left;
+      display: none;
+    }
+
+    /* Waitlist Success View */
+    .success-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 24px 0;
+    }
+
+    .success-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: var(--ink);
+      margin-top: 16px;
+      margin-bottom: 12px;
+    }
+
+    .success-body {
+      font-size: 1rem;
+      color: var(--steel);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      max-width: 480px;
+    }
+
+    /* Feature Request Section */
+    .request-feature-section {
+      background-color: var(--frost);
+      padding: 80px 0;
+    }
+
+    .request-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+      .request-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 64px;
+      }
+    }
+
+    .request-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .request-signals {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .signal-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 1rem;
+      color: var(--steel);
+      font-weight: 500;
+    }
+
+    .signal-icon {
+      color: var(--signal);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .request-form-card {
+      background-color: var(--white);
+      border: 1px solid var(--steel);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    /* Radio pills styling */
+    .radio-pill-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .radio-pill-label {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .radio-pill-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .radio-pill-span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 38px;
+      border: 1px solid var(--steel);
+      border-radius: 20px;
+      background-color: var(--slate);
+      color: var(--steel);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .radio-pill-input:checked + .radio-pill-span {
+      background-color: var(--signal);
+      color: var(--white);
+      border-color: var(--signal);
+    }
+
+    .btn-submit-ghost {
+      width: 100%;
+      height: 44px;
+      background-color: transparent;
+      border: 1px solid var(--signal);
+      color: var(--signal);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-submit-ghost:hover {
+      background-color: var(--signal);
+      color: var(--white);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--ink);
+      border-top: 1px solid var(--steel);
+      padding: 48px 0 32px;
+      color: var(--white);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    @media (min-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: 1.5fr 1fr 1.5fr;
+        gap: 64px;
+      }
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    /* Footer logo: stacked lockup */
+    .footer-logo-lockup {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .footer-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .footer-logo-text {
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.025em;
+    }
+
+    .footer-by-row {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      text-decoration: none;
+      margin-left: 18px; /* aligns under 'TrialPact' text after dot + gap */
+    }
+
+    .footer-by {
+      font-family: var(--font-body);
+      font-size: 0.6875rem;
+      font-weight: 400;
+      color: #4A5568;
+      letter-spacing: 0.04em;
+      text-transform: lowercase;
+    }
+
+    .footer-virsai {
+      font-family: var(--font-display);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: #60A5FA;
+      letter-spacing: -0.01em;
+      transition: color 0.2s ease;
+    }
+
+    .footer-by-row:hover .footer-virsai {
+      color: #93C5FD;
+    }
+
+    .footer-by-row:hover .footer-by {
+      color: #718096;
+    }
+
+    .footer-tagline {
+      font-size: 0.875rem;
+      color: var(--steel);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .footer-heading {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--steel);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-link {
+      font-size: 0.875rem;
+      color: var(--steel);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--white);
+    }
+
+    .footer-link.hover-signal:hover {
+      color: var(--signal);
+    }
+
+    .footer-disclaimer {
+      font-size: 0.75rem;
+      color: var(--steel);
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--steel);
+      padding-top: 24px;
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .footer-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .footer-bottom-left, .footer-bottom-right {
+      font-size: 0.75rem;
+      color: var(--steel);
+    }
+
+    .footer-bottom-right a {
+      color: var(--steel);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-bottom-right a:hover {
+      color: var(--signal);
+    }
+
+    /* Reduced motion adjustments */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      *, *::before, *::after {
+        animation-delay: -1ms !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        background-attachment: initial !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0s !important;
+        transition-delay: 0s !important;
+      }
+      .typing-cursor::after {
+        content: none !important;
+      }
+      .pulsing-dot {
+        animation: none !important;
+      }
+      .pulsing-ellipsis::after {
+        content: '...' !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header id="site-header">
+    <div class="container nav-container">
+      <div style="display: flex; align-items: center;">
+        <a href="#" class="logo-lockup" aria-label="TrialPact Home">
+          <span class="logo-dot"></span>
+          <span class="logo-text">TrialPact</span>
+        </a>
+        <span class="logo-rule" aria-hidden="true"></span>
+        <a href="https://www.virsaisolutions.com/" target="_blank" rel="noopener noreferrer" class="logo-brand-block" aria-label="VirsAI Solutions">
+          <span class="logo-by">by</span>
+          <span class="logo-virsai">VirsAI</span>
+        </a>
+      </div>
+
+      <div class="nav-menu-wrapper">
+        <nav aria-label="Main navigation">
+          <ul class="nav-menu">
+            <li><a href="#features" class="nav-link">Features</a></li>
+            <li><a href="#simulation" class="nav-link">Simulation</a></li>
+            <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+            <li><a href="#request-feature" class="nav-link">Request Feature</a></li>
+          </ul>
+        </nav>
+        
+        <div class="nav-right">
+          <a href="#waitlist" class="btn btn-primary btn-nav-cta">Join Waitlist</a>
+          <button class="hamburger" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <line class="line-1" x1="4" y1="6" x2="20" y2="6"></line>
+              <line class="line-2" x1="4" y1="12" x2="20" y2="12"></line>
+              <line class="line-3" x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Overlay Navigation -->
+  <div class="mobile-overlay" id="mobile-nav" aria-hidden="true">
+    <nav aria-label="Mobile navigation">
+      <ul style="list-style: none; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+        <li><a href="#features" class="mobile-nav-link nav-link">Features</a></li>
+        <li><a href="#simulation" class="mobile-nav-link nav-link">Simulation</a></li>
+        <li><a href="#how-it-works" class="mobile-nav-link nav-link">How It Works</a></li>
+        <li><a href="#request-feature" class="mobile-nav-link nav-link">Request Feature</a></li>
+        <li><a href="#waitlist" class="mobile-nav-link btn btn-primary btn-mobile-cta">Join Waitlist</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <span class="eyebrow">CLINICAL TRIAL CONTRACT INTELLIGENCE</span>
+          <h1 class="hero-headline">Clinical trial contracts that close in days, not months.</h1>
+          <p class="hero-subhead">The average CTA negotiation takes 90+ days and every day of delay costs $1.3M. TrialPact is AI-native contract intelligence built for emerging biotech sponsors — not Big Pharma.</p>
+          
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-num" id="stat-days">90+ days</span>
+              <span class="stat-label">avg. CTA negotiation</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" id="stat-starts">63%</span>
+              <span class="stat-label">of trial starts, no legal ops team</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" id="stat-cost">$1.3M</span>
+              <span class="stat-label">daily cost of trial delay</span>
+            </div>
+          </div>
+
+          <div class="cta-row-container">
+            <div class="cta-row">
+              <a href="#waitlist" class="btn btn-primary btn-hero-primary">Join Waitlist &rarr;</a>
+              <a href="#simulation" class="btn btn-hero-secondary">See the Simulation &darr;</a>
+            </div>
+            <p class="cta-tagline">No implementation fees &middot; No dedicated legal ops team needed &middot; Built for Phase 1–3</p>
+          </div>
+        </div>
+
+        <div class="hero-card-container">
+          <div class="contract-card" aria-label="Animated clinical trial agreement reviewer demonstration">
+            <div class="card-header-row">
+              <span class="card-filename">CTA_draft_v3.docx</span>
+              <span class="card-status">
+                <span class="pulsing-dot" aria-hidden="true"></span>
+                AI Reviewing
+              </span>
+            </div>
+            <div class="clause-block-animated" id="hero-typing-block" aria-live="polite">
+              <div id="hero-clause-title" class="typing-cursor"></div>
+              <div id="hero-clause-body" style="font-size: 0.75rem; color: var(--frost);"></div>
+              <div id="hero-badge-1" class="badge badge-amber" style="margin-top: 4px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right: 4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span>Mutual indemnification missing</span>
+              </div>
+              <div id="hero-clause-body-2" style="font-size: 0.75rem; color: var(--frost); margin-top: 12px; min-height: 20px;"></div>
+              <div id="hero-badge-2" class="badge badge-emerald" style="margin-top: 4px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Publication rights — accepted</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section" id="problem" aria-labelledby="problem-title">
+      <div class="container">
+        <h2 class="section-title" id="problem-title">The $1.3M/day problem no one talks about.</h2>
+        <p class="section-subtitle">Half of all clinical trial delays trace back to contracting. CTA negotiation averages 90+ days — and emerging biotechs absorb this delay without a dedicated legal ops team.</p>
+
+        <div class="problem-grid">
+          <!-- Card 1 -->
+          <div class="problem-card border-red">
+            <div class="card-icon red">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <h3 class="card-title">90+ days, every time</h3>
+            <p class="card-body">The average clinical trial agreement takes 90+ days to negotiate. Every contract restart, missed redline, or back-and-forth email thread adds weeks of delay — and millions in direct cost.</p>
+            <span class="stat-pill">50% of trial delays — contracting</span>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="problem-card border-amber">
+            <div class="card-icon amber">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <h3 class="card-title">63% have no legal ops team</h3>
+            <p class="card-body">The majority of Phase 1–3 trial starts come from emerging biotechs that don't have dedicated legal operations. Every contract falls on clinical or finance teams without institutional knowledge or precedents.</p>
+            <span class="stat-pill">63% of trial starts — no legal ops</span>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="problem-card border-red">
+            <div class="card-icon red">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <h3 class="card-title">$1.3M lost per day</h3>
+            <p class="card-body">Every day of trial delay is estimated to cost $1.3M in direct R&D burn, deferred revenue, and competitive disadvantage. Contracting delays don't feel expensive — until you do the math.</p>
+            <span class="stat-pill">$1.3M/day — documented industry cost</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Simulation Section -->
+    <section class="simulation-section" id="simulation">
+      <div class="container">
+        <div class="sim-header">
+          <span class="sim-eyebrow">LIVE SIMULATION</span>
+          <h2 class="sim-title">See TrialPact review a real CTA.</h2>
+          <p class="sim-subtitle">Interact with the AI review engine and template library. This is the actual product experience.</p>
+        </div>
+
+        <div class="tab-bar-container">
+          <div class="tab-bar" role="tablist" aria-label="Simulation options">
+            <button class="tab-btn" id="tab-review" role="tab" aria-selected="true" aria-controls="panel-review">AI Contract Review</button>
+            <button class="tab-btn" id="tab-templates" role="tab" aria-selected="false" aria-controls="panel-templates">Template Library</button>
+          </div>
+        </div>
+
+        <!-- TAB 1: AI CONTRACT REVIEW PANEL -->
+        <div class="tab-panel active" id="panel-review" role="tabpanel" aria-labelledby="tab-review">
+          <div class="review-grid">
+            <!-- Left panel: contract document viewer -->
+            <div class="doc-viewer">
+              <div class="doc-header-row">
+                <span class="doc-filename">CTA_MassGeneral_v2.docx</span>
+                <span class="doc-badge">Phase 2 Oncology</span>
+              </div>
+              <div class="doc-scroll-panel" id="doc-viewer-scroll">
+                <!-- Clause 1 -->
+                <div class="clause-block active-amber" id="clause-1-block">
+                  <span style="font-weight:700;">4.2 INDEMNIFICATION</span>
+
+                  Sponsor shall indemnify and hold harmless the Institution, its trustees, officers, employees and agents (collectively 'Institution Parties') from and against any and all claims, damages, losses, costs and expenses (including reasonable attorneys' fees) arising out of or resulting from the <span class="highlight-amber" id="highlight-indem">Sponsor's negligence or willful misconduct</span> in connection with this Agreement or the Study.
+                </div>
+
+                <!-- Clause 2 -->
+                <div class="clause-block" id="clause-2-block">
+                  <span style="font-weight:700;">5.1 SUBJECT INJURY</span>
+
+                  In the event a Study subject suffers an injury as a direct result of receiving the Investigational Product according to the Study protocol, Sponsor agrees to provide or arrange for medical treatment of such injury at no cost to the subject, <span class="highlight-red" id="highlight-injury">to the extent such injury is not covered by the subject's health insurance</span> or other third-party payor.
+                </div>
+
+                <!-- Clause 3 -->
+                <div class="clause-block" id="clause-3-block">
+                  <span style="font-weight:700;">6.3 PUBLICATION RIGHTS</span>
+
+                  Institution shall have the right to publish the results of the Study. Sponsor shall have thirty (30) days to review any proposed publication for confidential or proprietary information prior to submission. Sponsor may not unreasonably withhold consent to publication.
+                </div>
+              </div>
+
+              <div class="doc-progress-container">
+                <span class="doc-progress-text" id="progress-status">Clause analysis: 3 of 6 categories reviewed</span>
+                <div class="doc-progress-track">
+                  <div class="doc-progress-bar" id="progress-bar" style="width: 50%;"></div>
+                </div>
+              </div>
+
+              <button class="btn btn-analyze" id="btn-next-clause">Analyze Next Clause &rarr;</button>
+            </div>
+
+            <!-- Right panel: AI analysis cards -->
+            <div class="analysis-container">
+              <div class="analysis-header">
+                <span class="pulsing-dot blue" aria-hidden="true"></span>
+                <span>AI Analysis</span>
+              </div>
+
+              <div class="analysis-cards-wrapper" id="analysis-wrapper">
+                <!-- Cards will render here dynamically via JS state machine -->
+              </div>
+
+              <div class="analysis-summary-strip">
+                <span class="summary-text" id="analysis-summary-text">2 items need attention &middot; 1 approved &middot; 3 clauses remaining</span>
+                <button class="btn-ghost-signal" id="btn-full-report">Full Report &rarr;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: TEMPLATE LIBRARY PANEL -->
+        <div class="tab-panel" id="panel-templates" role="tabpanel" aria-labelledby="tab-templates">
+          <div class="template-header-row">
+            <div class="search-wrapper">
+              <span class="search-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </span>
+              <input type="text" class="search-input" id="template-search" placeholder="Search templates — try 'CRO', 'indemnification', 'Phase 2'..." aria-label="Search template library">
+            </div>
+
+            <div class="filter-pills-row" id="filter-pills">
+              <button class="filter-pill active" data-category="All">All</button>
+              <button class="filter-pill" data-category="Sponsor-Site">Sponsor-Site</button>
+              <button class="filter-pill" data-category="CRO/Vendor">CRO/Vendor</button>
+              <button class="filter-pill" data-category="Manufacturing">Manufacturing</button>
+              <button class="filter-pill" data-category="Investigator">Investigator</button>
+            </div>
+          </div>
+
+          <div class="template-grid" id="templates-grid">
+            <!-- Cards populated dynamically by templatesData JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Features Section -->
+    <section class="features-detail-section" id="features">
+      <div class="container">
+        <h2 class="section-title">Every capability a lean clinical ops team needs.</h2>
+        <p class="section-subtitle">No 6-month implementation. No dedicated legal ops team required. Purpose-built for emerging biotech sponsors.</p>
+
+        <!-- Plan Legend -->
+        <div class="features-plan-legend" aria-label="Feature availability by plan tier">
+          <span class="plan-legend-item plan-core">
+            <span class="plan-legend-dot"></span>
+            Core — All plans
+          </span>
+          <span class="plan-legend-item plan-growth">
+            <span class="plan-legend-dot"></span>
+            Growth — Scale plans
+          </span>
+          <span class="plan-legend-item plan-scale">
+            <span class="plan-legend-dot"></span>
+            Scale — Enterprise
+          </span>
+        </div>
+
+        <div class="features-grid">
+          <!-- Feature 1 -->
+          <div class="feature-card" aria-label="Core capability: AI Redlining with Pharma Context">
+            <div class="feature-card-icon">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <path d="M14 2v6h6"></path>
+                <path d="M16 11l2.5 2.5L11.5 20H9v-2.5L16 11z"></path>
+              </svg>
+            </div>
+            <h3 class="feature-card-title">AI Redlining with Pharma Context</h3>
+            <p class="feature-card-body">Not generic AI. TrialPact understands that 'promptly' vs 'immediately' has legal significance in a site agreement. Flags deviations from your pre-approved positions and suggests fallback language drawn from 847+ pharma-specific precedent CTAs.</p>
+            
+            <div class="feature-mock-ui mock-redline" aria-hidden="true">
+              <div class="line">Sponsor will <span class="del">immediately</span> <span class="ins">promptly (within 24h)</span> notify...</div>
+              <div class="consensus">
+                <span class="consensus-badge">84% Precedent Consensus</span>
+                <span>for investigator agreements</span>
+              </div>
+            </div>
+
+            <span class="feature-tag-pill tier-core">Core &middot; All plans</span>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="feature-card" aria-label="Growth capability: Negotiation Memory Engine">
+            <div class="feature-card-icon">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                <path d="M12 6v12M6 12h12M7.76 7.76l8.48 8.48M7.76 16.24l8.48-8.48"></path>
+                <circle cx="12" cy="6" r="1.5" fill="currentColor"></circle>
+                <circle cx="12" cy="18" r="1.5" fill="currentColor"></circle>
+                <circle cx="6" cy="12" r="1.5" fill="currentColor"></circle>
+                <circle cx="18" cy="12" r="1.5" fill="currentColor"></circle>
+              </svg>
+            </div>
+            <h3 class="feature-card-title">Negotiation Memory Engine</h3>
+            <p class="feature-card-body">Every accepted and rejected position is stored. The next time you contract with the same institution, TrialPact preloads prior accepted positions. Your institutional knowledge compounds — it doesn't disappear when a team member leaves.</p>
+            
+            <div class="feature-mock-ui mock-memory" aria-hidden="true">
+              <table class="mock-memory-table">
+                <thead>
+                  <tr>
+                    <th>Mayo Clinic CTA</th>
+                    <th>Prior Term</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Indemnification</td>
+                    <td>Sponsor unilateral</td>
+                    <td><span class="mock-memory-pill">Accepted 2025</span></td>
+                  </tr>
+                  <tr>
+                    <td>Subject Injury</td>
+                    <td>Sponsor covers all</td>
+                    <td><span class="mock-memory-pill">Accepted 2025</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <span class="feature-tag-pill tier-growth">Growth &middot; Scale plans</span>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="feature-card" aria-label="Growth capability: Budget &harr; Contract Linkage">
+            <div class="feature-card-icon">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="8" height="6" rx="1"></rect>
+                <rect x="14" y="14" width="8" height="6" rx="1"></rect>
+                <path d="M6 10v4h8"></path>
+                <circle cx="6" cy="12" r="1" fill="currentColor"></circle>
+                <circle cx="14" cy="12" r="1" fill="currentColor"></circle>
+              </svg>
+            </div>
+            <h3 class="feature-card-title">Budget &harr; Contract Linkage</h3>
+            <p class="feature-card-body">Milestone payment schedules tied directly to contract language. Flags when contracted payment terms conflict with your study budget. Alerts before a billing window closes — not after you've already missed it.</p>
+            
+            <div class="feature-mock-ui mock-linkage" aria-hidden="true">
+              <div class="mock-linkage-row">
+                <span class="mock-linkage-label">CTA payment:</span>
+                <span class="mock-linkage-value">Net 60 Days</span>
+              </div>
+              <div class="mock-linkage-row">
+                <span class="mock-linkage-label">Budget max:</span>
+                <span class="mock-linkage-value">Net 30 Days</span>
+              </div>
+              <div class="mock-linkage-warning">
+                <span>⚠️</span>
+                <span>Payment term conflict: Net 60 violates Net 30 cap</span>
+              </div>
+            </div>
+
+            <span class="feature-tag-pill tier-growth">Growth &middot; Scale plans</span>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="feature-card" aria-label="Core capability: Fair Market Value Benchmarking">
+            <div class="feature-card-icon">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="2" x2="12" y2="22"></line>
+                <line x1="5" y1="7" x2="19" y2="7"></line>
+                <path d="M5 7l3 10h-6l3-10M19 7l3 10h-6l3-10M12 22h8M4 22h8"></path>
+              </svg>
+            </div>
+            <h3 class="feature-card-title">Fair Market Value Benchmarking</h3>
+            <p class="feature-card-body">Every investigator fee benchmarked against FMV data in real time. Flags payments outside safe harbor ranges before signature. What currently requires a compliance audit to surface, TrialPact flags before the ink dries.</p>
+            
+            <div class="feature-mock-ui mock-fmv" aria-hidden="true">
+              <div class="mock-fmv-header">
+                <span>Proposed: $1,250 / visit</span>
+                <span style="color:#f87171;">+18% deviation</span>
+              </div>
+              <div class="mock-fmv-bar-container">
+                <div class="mock-fmv-range"></div>
+                <div class="mock-fmv-marker"></div>
+              </div>
+              <div class="mock-fmv-labels">
+                <span>$850</span>
+                <span>FMV Range (Safe Harbor)</span>
+                <span>$1,100</span>
+              </div>
+              <div class="mock-fmv-alert">
+                <span>⚠️</span>
+                <span>Exceeds local FMV limit by $150</span>
+              </div>
+            </div>
+
+            <span class="feature-tag-pill tier-core">Core &middot; All plans</span>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="feature-card" aria-label="Scale capability: Country-Specific Clause Intelligence">
+            <div class="feature-card-icon">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="10" cy="14" r="8"></circle>
+                <path d="M10 6a15.3 15.3 0 0 1 3 8 15.3 15.3 0 0 1-3 8"></path>
+                <rect x="14" y="2" width="8" height="10" rx="1"></rect>
+                <path d="M17 5h2M17 8h2"></path>
+              </svg>
+            </div>
+            <h3 class="feature-card-title">Country-Specific Clause Intelligence</h3>
+            <p class="feature-card-body">Multi-jurisdictional trials covered. Mandatory local law clauses surfaced automatically when a non-US site is added. No more negotiating terms that local statute already mandates.</p>
+            
+            <div class="feature-mock-ui mock-country" aria-hidden="true">
+              <div class="mock-country-header">
+                <span class="mock-flag-emoji">🇬🇧</span>
+                <span class="mock-country-name">United Kingdom (NHS Site)</span>
+              </div>
+              <div>Auto-inserted:</div>
+              <div class="mock-country-insert">
+                "Subject to NHS Indemnity guidelines (form A)..."
+              </div>
+            </div>
+
+            <span class="feature-tag-pill tier-scale">Scale &middot; Enterprise</span>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="feature-card" aria-label="Core capability: Pre-Signature Compliance Check">
+            <div class="feature-card-icon">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 11 11 13 15 9"></polyline>
+              </svg>
+            </div>
+            <h3 class="feature-card-title">Pre-Signature Compliance Check</h3>
+            <p class="feature-card-body">Before any CTA is signed: protocol version match verified, indemnification checked against FDA guidance, financial interest disclosure requirements confirmed per 21 CFR 54. What a $500/hour regulatory attorney does — automated at signature time.</p>
+            
+            <div class="feature-mock-ui mock-compliance" aria-hidden="true">
+              <div class="mock-compliance-list">
+                <div class="mock-compliance-item checked">
+                  <span class="mock-compliance-checkbox">✓</span>
+                  <span>Protocol v4.1 (Oncology Study) match</span>
+                </div>
+                <div class="mock-compliance-item checked">
+                  <span class="mock-compliance-checkbox">✓</span>
+                  <span>FDA 1572 Form match verified</span>
+                </div>
+                <div class="mock-compliance-item checked">
+                  <span class="mock-compliance-checkbox">✓</span>
+                  <span>21 CFR 54 Financial disclosures ok</span>
+                </div>
+              </div>
+              <div class="mock-compliance-badge">Ready for Signature</div>
+            </div>
+
+            <span class="feature-tag-pill tier-core">Core &middot; All plans</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- How It Works Section -->
+    <section class="how-it-works-section" id="how-it-works">
+      <div class="container">
+        <div class="sim-header">
+          <h2 class="sim-title" style="margin-bottom: 0;">From draft to signed in three steps.</h2>
+        </div>
+
+        <div class="timeline">
+          <!-- Step 1 -->
+          <div class="step-item" aria-label="Step 1: Upload or draft">
+            <div class="step-node">1</div>
+            <h3 class="step-title">Upload or draft</h3>
+            <p class="step-body">Start from a TrialPact template or upload your existing draft in .docx or PDF. AI extracts clause structure and maps to the standard 6-category framework in under 60 seconds.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-item" aria-label="Step 2: AI reviews all critical clauses">
+            <div class="step-node">2</div>
+            <h3 class="step-title">AI reviews all critical clauses</h3>
+            <p class="step-body">Indemnification, IP, data rights, subject injury, confidentiality, and publication rights — reviewed against 847+ pharma precedents and your pre-approved fallback positions simultaneously.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-item" aria-label="Step 3: Negotiate with memory">
+            <div class="step-node">3</div>
+            <h3 class="step-title">Negotiate with memory</h3>
+            <p class="step-body">Accept, reject, or modify AI suggestions. Every decision is stored. Send counterparty redlines directly from TrialPact. Each negotiation makes the next one faster.</p>
+          </div>
+        </div>
+
+        <div class="how-cta-container">
+          <p class="how-cta-text">Ready to cut your CTA timeline?</p>
+          <a href="#waitlist" class="btn btn-primary btn-how-cta">Join the Waitlist</a>
+        </div>
+      </div>
+    </section>
+    <!-- Waitlist Form Section -->
+    <section class="waitlist-section" id="waitlist">
+      <div class="container">
+        <div class="waitlist-card">
+          <div id="waitlist-form-container">
+            <div class="form-header">
+              <span class="eyebrow" style="margin-bottom:0;">EARLY ACCESS</span>
+              <h2 class="form-title">Join the founding cohort.</h2>
+              <p class="form-subtitle">We're onboarding 50 founding teams with direct product team access and input on the roadmap. No commitment required.</p>
+            </div>
+
+            <div class="form-submit-error" id="waitlist-submit-error" role="alert"></div>
+
+            <form id="waitlist-form" action="https://formspree.io/f/mwvdewvn" method="POST" novalidate>
+              <input type="hidden" name="_subject" value="TrialPact Waitlist Signup">
+              
+              <!-- Field 1: Full name -->
+              <div class="form-group">
+                <label for="waitlist-name" class="form-label">Full name</label>
+                <input type="text" id="waitlist-name" name="name" class="form-control" placeholder="Dr. Sarah Chen" required aria-describedby="waitlist-name-error" aria-invalid="false">
+                <span class="form-error-msg" id="waitlist-name-error" role="alert">This field is required.</span>
+              </div>
+
+              <!-- Field 2: Work email -->
+              <div class="form-group">
+                <label for="waitlist-email" class="form-label">Work email</label>
+                <input type="email" id="waitlist-email" name="email" class="form-control" placeholder="sarah@yourbiotech.com" required aria-describedby="waitlist-email-error" aria-invalid="false">
+                <span class="form-error-msg" id="waitlist-email-error" role="alert">This field is required.</span>
+              </div>
+
+              <!-- Field 3: Company name -->
+              <div class="form-group">
+                <label for="waitlist-company" class="form-label">Company name</label>
+                <input type="text" id="waitlist-company" name="company" class="form-control" placeholder="Apex Therapeutics" required aria-describedby="waitlist-company-error" aria-invalid="false">
+                <span class="form-error-msg" id="waitlist-company-error" role="alert">This field is required.</span>
+              </div>
+
+              <!-- Field 4: Your role -->
+              <div class="form-group">
+                <label for="waitlist-role" class="form-label">Your role</label>
+                <select id="waitlist-role" name="role" class="form-control" required style="padding-right: 32px;" aria-describedby="waitlist-role-error" aria-invalid="false">
+                  <option value="" disabled selected>-- Select your role --</option>
+                  <option value="VP / Director, Clinical Operations">VP / Director, Clinical Operations</option>
+                  <option value="Contracts & Legal">Contracts & Legal</option>
+                  <option value="CEO / Founder">CEO / Founder</option>
+                  <option value="CFO / Finance">CFO / Finance</option>
+                  <option value="CRO or CDMO Professional">CRO or CDMO Professional</option>
+                  <option value="Regulatory Affairs">Regulatory Affairs</option>
+                  <option value="Other">Other</option>
+                </select>
+                <span class="form-error-msg" id="waitlist-role-error" role="alert">Please select an option.</span>
+              </div>
+
+              <!-- Field 5: Current trial phase -->
+              <div class="form-group">
+                <label for="waitlist-phase" class="form-label">Current or upcoming trial phase</label>
+                <select id="waitlist-phase" name="trial_phase" class="form-control" required style="padding-right: 32px;" aria-describedby="waitlist-phase-error" aria-invalid="false">
+                  <option value="" disabled selected>-- Select phase --</option>
+                  <option value="Pre-IND / IND preparation">Pre-IND / IND preparation</option>
+                  <option value="Phase 1">Phase 1</option>
+                  <option value="Phase 2">Phase 2</option>
+                  <option value="Phase 3">Phase 3</option>
+                  <option value="Multiple phases simultaneously">Multiple phases simultaneously</option>
+                </select>
+                <span class="form-error-msg" id="waitlist-phase-error" role="alert">Please select an option.</span>
+              </div>
+
+              <!-- Field 6: Biggest pain point (optional) -->
+              <div class="form-group" style="margin-bottom: 32px;">
+                <label for="waitlist-pain" class="form-label">What's your biggest contracting bottleneck? (optional)</label>
+                <textarea id="waitlist-pain" name="pain_point" class="form-control" rows="4" placeholder="e.g. CTA negotiations taking 3+ months, inconsistent site budgets, missed milestone payments..."></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-submit" id="waitlist-submit-btn">
+                <span>Claim Founding Spot &rarr;</span>
+              </button>
+            </form>
+          </div>
+        </div>
+        <p style="text-align: center; color: var(--steel); font-size: 0.8125rem; margin-top: 24px;">By submitting, you agree to receive product updates from TrialPact. Unsubscribe anytime. We do not share your information.</p>
+      </div>
+    </section>
+
+    <!-- Request a Feature Section -->
+    <section class="request-feature-section" id="request-feature">
+      <div class="container">
+        <div class="request-grid">
+          <!-- Left Column: Copy -->
+          <div class="request-info">
+            <span class="eyebrow">SHAPE THE ROADMAP</span>
+            <h2 class="form-title" style="margin-top: 8px; margin-bottom: 16px;">Tell us what to build next.</h2>
+            <p style="color: var(--steel); font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">We read every submission. Features with the most traction ship first. If you're a founding team member, your requests go to the top of the queue.</p>
+            
+            <div class="request-signals">
+              <div class="signal-item">
+                <span class="signal-icon">&check;</span>
+                <span>We respond to every request within 5 business days</span>
+              </div>
+              <div class="signal-item">
+                <span class="signal-icon">&check;</span>
+                <span>High-vote features ship within 90 days</span>
+              </div>
+              <div class="signal-item">
+                <span class="signal-icon">&check;</span>
+                <span>Founding members get early access to requested features</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Form Card -->
+          <div class="request-form-card">
+            <div id="feature-form-container">
+              <div class="form-submit-error" id="feature-submit-error" role="alert"></div>
+
+              <form id="feature-form" action="https://formspree.io/f/mwvdewvn" method="POST" novalidate>
+                <input type="hidden" name="_subject" value="TrialPact Feature Request">
+                
+                <!-- Field 1: Work email -->
+                <div class="form-group">
+                  <label for="feature-email" class="form-label">Work email</label>
+                  <input type="email" id="feature-email" name="email" class="form-control" placeholder="sarah@yourbiotech.com" required aria-describedby="feature-email-error" aria-invalid="false">
+                  <span class="form-error-msg" id="feature-email-error" role="alert">This field is required.</span>
+                </div>
+
+                <!-- Field 2: Feature request description -->
+                <div class="form-group">
+                  <label for="feature-desc" class="form-label">Describe the feature</label>
+                  <textarea id="feature-desc" name="feature_request" class="form-control" rows="5" placeholder="e.g. Automated budget reconciliation that flags per-patient payments when they drift from the contracted rate..." required aria-describedby="feature-desc-error" aria-invalid="false"></textarea>
+                  <span class="form-error-msg" id="feature-desc-error" role="alert">This field is required.</span>
+                </div>
+
+                <!-- Field 3: Priority -->
+                <div class="form-group" style="margin-bottom: 32px; width: 100%;">
+                  <label class="form-label">How critical is this to your workflow?</label>
+                  <div class="radio-pill-group" role="radiogroup" aria-labelledby="priority-label">
+                    <label class="radio-pill-label">
+                      <input type="radio" name="priority" value="Nice to have" class="radio-pill-input" checked>
+                      <span class="radio-pill-span">Nice to have</span>
+                    </label>
+                    <label class="radio-pill-label">
+                      <input type="radio" name="priority" value="Important" class="radio-pill-input">
+                      <span class="radio-pill-span">Important</span>
+                    </label>
+                    <label class="radio-pill-label">
+                      <input type="radio" name="priority" value="Critical" class="radio-pill-input">
+                      <span class="radio-pill-span">Critical</span>
+                    </label>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-submit-ghost" id="feature-submit-btn">
+                  <span>Submit Feature Request &rarr;</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer aria-label="Page footer">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- Column 1: Logo & Tagline -->
+        <div class="footer-col">
+          <div class="footer-logo-lockup">
+            <a href="#" class="footer-logo-row" aria-label="TrialPact Home">
+              <span class="logo-dot"></span>
+              <span class="footer-logo-text">TrialPact</span>
+            </a>
+            <a href="https://www.virsaisolutions.com/" target="_blank" rel="noopener noreferrer" class="footer-by-row" aria-label="VirsAI Solutions">
+              <span class="footer-by">by</span>
+              <span class="footer-virsai">VirsAI</span>
+            </a>
+          </div>
+          <p class="footer-tagline">Contract intelligence for emerging biotech.</p>
+        </div>
+
+        <!-- Column 2: Navigation -->
+        <div class="footer-col" style="gap: 20px;">
+          <div>
+            <h4 class="footer-heading">Product</h4>
+            <ul class="footer-links">
+              <li><a href="#features" class="footer-link">Features</a></li>
+              <li><a href="#simulation" class="footer-link">Simulation</a></li>
+              <li><a href="#how-it-works" class="footer-link">How It Works</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="footer-heading">Company</h4>
+            <ul class="footer-links">
+              <li><a href="https://www.virsaisolutions.com/" target="_blank" rel="noopener noreferrer" class="footer-link">VirsAI</a></li>
+              <li><a href="mailto:info@virsaisolutions.com" class="footer-link">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Column 3: Legal & Contact -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Get in touch</h4>
+          <a href="mailto:info@virsaisolutions.com" class="footer-link hover-signal" style="font-weight: 500; font-size: 0.9375rem; margin-bottom: 24px;">info@virsaisolutions.com</a>
+          
+          <h4 class="footer-heading" style="margin-bottom: 6px;">Legal Disclaimer</h4>
+          <p class="footer-disclaimer">TrialPact is contract drafting and analysis software, not legal advice. All AI-generated suggestions should be reviewed by qualified legal counsel before execution.</p>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-left">
+          &copy; 2026 VirsAI. All rights reserved.
+        </div>
+        <div class="footer-bottom-right">
+          <a href="https://www.virsaisolutions.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> &middot; <a href="https://www.virsaisolutions.com/terms-of-service" target="_blank" rel="noopener noreferrer">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Template Preview Modal -->
+  <div class="modal-overlay" id="preview-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-title-area">
+          <h3 class="modal-title" id="modal-title">Template Preview</h3>
+          <span class="phase-badge" id="modal-phase-badge" style="background-color: var(--signal); color: var(--white);">Phase 1–3</span>
+        </div>
+        <button class="btn-close-modal" id="modal-close" aria-label="Close template preview modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <pre class="modal-preview-text" id="modal-body-text"></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-modal-cta" id="modal-waitlist-cta">Request Early Access &rarr;</button>
+        <button class="btn btn-modal-close" id="modal-close-footer">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Toast Container -->
+  <div class="toast" id="toast-notify" aria-live="polite">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none;" id="toast-icon-success">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--signal)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none;" id="toast-icon-info">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    <span id="toast-message">Action completed.</span>
+  </div>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    // Header Scroll Event
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Mobile Hamburger Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileNav = document.getElementById('mobile-nav');
+    const body = document.body;
+
+    function toggleMenu() {
+      const isOpen = menuToggle.classList.contains('open');
+      menuToggle.classList.toggle('open');
+      mobileNav.classList.toggle('open');
+      body.classList.toggle('overlay-open');
+      
+      menuToggle.setAttribute('aria-expanded', !isOpen);
+      mobileNav.setAttribute('aria-hidden', isOpen);
+
+      if (isOpen) {
+        menuToggle.setAttribute('aria-label', 'Open navigation menu');
+      } else {
+        menuToggle.setAttribute('aria-label', 'Close navigation menu');
+      }
+    }
+
+    menuToggle.addEventListener('click', toggleMenu);
+
+    // Close menu when a link inside mobile overlay is clicked
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (mobileNav.classList.contains('open')) {
+          toggleMenu();
+        }
+      });
+    });
+
+    // --- Hero Stats Count-Up ---
+    const statsSection = document.querySelector('.stats-row');
+    const statDays = document.getElementById('stat-days');
+    const statStarts = document.getElementById('stat-starts');
+    const statCost = document.getElementById('stat-cost');
+    let statsAnimated = false;
+
+    // Reset values initially if JS is active so we count up from zero
+    statDays.textContent = "0+ days";
+    statStarts.textContent = "0%";
+    statCost.textContent = "$0.0M";
+
+    function animateStats() {
+      const duration = 1200;
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = progress * (2 - progress); // Ease out quad
+
+        statDays.textContent = Math.floor(easeProgress * 90) + "+ days";
+        statStarts.textContent = Math.floor(easeProgress * 63) + "%";
+        statCost.textContent = "$" + (easeProgress * 1.3).toFixed(1) + "M";
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          statDays.textContent = "90+ days";
+          statStarts.textContent = "63%";
+          statCost.textContent = "$1.3M";
+        }
+      }
+      requestAnimationFrame(update);
+    }
+
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !statsAnimated) {
+          statsAnimated = true;
+          // Respect user media query for reduced motion
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            statDays.textContent = "90+ days";
+            statStarts.textContent = "63%";
+            statCost.textContent = "$1.3M";
+          } else {
+            animateStats();
+          }
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    if (statsSection) {
+      statsObserver.observe(statsSection);
+    }
+
+    // --- Hero Contract Card Typing Animation ---
+    const titleText = "4.2 INDEMNIFICATION";
+    const bodyText = "Sponsor shall indemnify and hold harmless the Institution, its trustees, officers, employees and agents from and against any claims...";
+    const line3Text = "Subject injury scope — reviewing";
+
+    const heroTitleEl = document.getElementById('hero-clause-title');
+    const heroBodyEl = document.getElementById('hero-clause-body');
+    const heroBadge1 = document.getElementById('hero-badge-1');
+    const heroBody2El = document.getElementById('hero-clause-body-2');
+    const heroBadge2 = document.getElementById('hero-badge-2');
+
+    let isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function renderStaticHeroCard() {
+      heroTitleEl.textContent = titleText;
+      heroTitleEl.className = ""; // Remove typing cursor
+      heroBodyEl.textContent = bodyText;
+      heroBadge1.classList.add('visible');
+      
+      const span = document.createElement('span');
+      span.textContent = line3Text;
+      const pulseSpan = document.createElement('span');
+      pulseSpan.className = "pulsing-ellipsis";
+      heroBody2El.appendChild(span);
+      heroBody2El.appendChild(pulseSpan);
+      heroBody2El.className = ""; // Remove typing cursor
+
+      heroBadge2.classList.add('visible');
+    }
+
+    if (isReducedMotion) {
+      renderStaticHeroCard();
+    } else {
+      // Typing engine loops every 8 seconds (8000ms)
+      function runTypingLoop() {
+        // Clear all
+        heroTitleEl.textContent = "";
+        heroTitleEl.className = "typing-cursor";
+        heroBodyEl.textContent = "";
+        heroBodyEl.className = "";
+        heroBadge1.classList.remove('visible');
+        heroBody2El.textContent = "";
+        heroBody2El.className = "";
+        heroBadge2.classList.remove('visible');
+
+        let titleIndex = 0;
+        let bodyIndex = 0;
+        let line3Index = 0;
+
+        // Phase 1: Type Title
+        const titleInterval = setInterval(() => {
+          if (titleIndex < titleText.length) {
+            heroTitleEl.textContent += titleText[titleIndex];
+            titleIndex++;
+          } else {
+            clearInterval(titleInterval);
+            heroTitleEl.className = ""; // Remove cursor from title
+            
+            // Wait 200ms, then start typing body
+            setTimeout(() => {
+              heroBodyEl.className = "typing-cursor";
+              typeBody();
+            }, 200);
+          }
+        }, 35);
+
+        // Phase 2: Type Body
+        function typeBody() {
+          const bodyInterval = setInterval(() => {
+            if (bodyIndex < bodyText.length) {
+              heroBodyEl.textContent += bodyText[bodyIndex];
+              bodyIndex++;
+            } else {
+              clearInterval(bodyInterval);
+              heroBodyEl.className = ""; // Remove cursor from body
+              
+              // Wait 500ms, then show Badge 1
+              setTimeout(() => {
+                heroBadge1.classList.add('visible');
+                
+                // Wait 800ms, then start typing Line 3
+                setTimeout(() => {
+                  heroBody2El.className = "typing-cursor";
+                  typeLine3();
+                }, 800);
+              }, 500);
+            }
+          }, 15);
+        }
+
+        // Phase 3: Type Line 3
+        function typeLine3() {
+          const line3Interval = setInterval(() => {
+            if (line3Index < line3Text.length) {
+              heroBody2El.textContent += line3Text[line3Index];
+              line3Index++;
+            } else {
+              clearInterval(line3Interval);
+              // Make ellipsis pulse
+              heroBody2El.className = ""; // Remove cursor
+              const pulseSpan = document.createElement('span');
+              pulseSpan.className = "pulsing-ellipsis";
+              heroBody2El.appendChild(pulseSpan);
+
+              // Wait 600ms, then show Badge 2
+              setTimeout(() => {
+                heroBadge2.classList.add('visible');
+              }, 600);
+            }
+          }, 30);
+        }
+      }
+
+      runTypingLoop();
+      setInterval(runTypingLoop, 8000);
+    }
+
+    // --- Problem Cards Intersection Observer ---
+    const problemGrid = document.querySelector('.problem-grid');
+    const problemObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const cards = entry.target.querySelectorAll('.problem-card');
+          cards.forEach((card, index) => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              card.classList.add('visible');
+            } else {
+              setTimeout(() => {
+                card.classList.add('visible');
+              }, index * 80);
+            }
+          });
+          problemObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    if (problemGrid) {
+      problemObserver.observe(problemGrid);
+    }
+
+    // --- Toast Notification System ---
+    const toastEl = document.getElementById('toast-notify');
+    const toastMsg = document.getElementById('toast-message');
+    const toastSuccessIcon = document.getElementById('toast-icon-success');
+    const toastInfoIcon = document.getElementById('toast-icon-info');
+    let toastTimeout;
+
+    function showToast(message, type = 'info') {
+      clearTimeout(toastTimeout);
+      toastMsg.textContent = message;
+      
+      if (type === 'success') {
+        toastSuccessIcon.style.display = 'inline-block';
+        toastInfoIcon.style.display = 'none';
+      } else {
+        toastSuccessIcon.style.display = 'none';
+        toastInfoIcon.style.display = 'inline-block';
+      }
+      
+      toastEl.classList.add('show');
+      toastTimeout = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 3000);
+    }
+
+    // --- Product Simulation: Tab Switching ---
+    const tabReview = document.getElementById('tab-review');
+    const tabTemplates = document.getElementById('tab-templates');
+    const panelReview = document.getElementById('panel-review');
+    const panelTemplates = document.getElementById('panel-templates');
+
+    function switchTab(activeTab, activePanel, inactiveTab, inactivePanel) {
+      activeTab.setAttribute('aria-selected', 'true');
+      inactiveTab.setAttribute('aria-selected', 'false');
+      
+      inactivePanel.classList.remove('active');
+      setTimeout(() => {
+        inactivePanel.style.display = 'none';
+        activePanel.style.display = 'block';
+        setTimeout(() => {
+          activePanel.classList.add('active');
+        }, 50);
+      }, 150);
+    }
+
+    tabReview.addEventListener('click', () => {
+      if (tabReview.getAttribute('aria-selected') === 'false') {
+        switchTab(tabReview, panelReview, tabTemplates, panelTemplates);
+      }
+    });
+
+    tabTemplates.addEventListener('click', () => {
+      if (tabTemplates.getAttribute('aria-selected') === 'false') {
+        switchTab(tabTemplates, panelTemplates, tabReview, panelReview);
+      }
+    });
+
+    // --- Product Simulation TAB 1: AI Contract Review State Machine ---
+    let currentReviewState = 0; // 0 = Clause 4.2, 1 = Clause 5.1, 2 = Clause 6.3
+    const analysisWrapper = document.getElementById('analysis-wrapper');
+    const progressStatus = document.getElementById('progress-status');
+    const progressBar = document.getElementById('progress-bar');
+    const btnNextClause = document.getElementById('btn-next-clause');
+    const analysisSummaryText = document.getElementById('analysis-summary-text');
+    const docViewerScroll = document.getElementById('doc-viewer-scroll');
+
+    const clauseBlocks = [
+      document.getElementById('clause-1-block'),
+      document.getElementById('clause-2-block'),
+      document.getElementById('clause-3-block')
+    ];
+
+    const reviewStates = [
+      {
+        progressText: "Clause analysis: 3 of 6 categories reviewed",
+        progressWidth: "50%",
+        summaryText: "2 items need attention &middot; 1 approved &middot; 3 clauses remaining",
+        activeClass: "active-amber",
+        scrollTarget: 0,
+        cards: [
+          {
+            severity: "amber",
+            badge: "⚠ NEGOTIATION RISK",
+            tag: "Clause 4.2",
+            title: "Mutual indemnification language absent",
+            body: "This clause indemnifies the Institution only. Industry-standard CTAs for academic medical centers include mutual indemnification. Our precedent database shows 94% of sponsors accept mutual language at AMCs without extended negotiation.",
+            suggested: "Suggested: 'Each party shall indemnify the other against claims arising from its own negligence or willful misconduct.'",
+            suggestedText: "Each party shall indemnify the other against claims arising from its own negligence or willful misconduct.",
+            btnText: "Apply Suggested Language",
+            linkText: "View 847 Precedents"
+          },
+          {
+            severity: "red",
+            badge: "🔴 COMPLIANCE FLAG",
+            tag: "Clause 5.1",
+            title: "Subject injury coverage creates compliance exposure",
+            body: "FDA expects sponsors to cover subject injury costs regardless of the subject's insurance status. The conditional 'to the extent not covered by insurance' language conflicts with FDA guidance and was the source of delay in 62% of flagged CTAs in our dataset.",
+            suggested: "Suggested: Remove the insurance carve-out. Cover injury costs unconditionally per FDA guidance on sponsor obligations.",
+            suggestedText: "Cover injury costs unconditionally per FDA guidance on sponsor obligations.",
+            btnText: "Apply FDA-Aligned Language",
+            linkText: "View FDA Guidance",
+            collapsed: true
+          },
+          {
+            severity: "emerald",
+            badge: "✓ NO ACTION REQUIRED",
+            tag: "Clause 6.3",
+            title: "Publication rights within accepted range",
+            body: "30-day sponsor review window is within the 15–45 day range accepted at 91% of academic research sites in our database. This clause requires no negotiation.",
+            stats: "15–45 days &middot; AMC accepted range &nbsp;|&nbsp; 91% &middot; acceptance rate",
+            collapsed: true
+          }
+        ]
+      },
+      {
+        progressText: "Clause analysis: 4 of 6 categories reviewed",
+        progressWidth: "66%",
+        summaryText: "1 item needs attention &middot; 2 approved &middot; 2 clauses remaining",
+        activeClass: "active-red",
+        scrollTarget: 160,
+        cards: [
+          {
+            severity: "red",
+            badge: "🔴 COMPLIANCE FLAG",
+            tag: "Clause 5.1",
+            title: "Subject injury coverage creates compliance exposure",
+            body: "FDA expects sponsors to cover subject injury costs regardless of the subject's insurance status. The conditional 'to the extent not covered by insurance' language conflicts with FDA guidance and was the source of delay in 62% of flagged CTAs in our dataset.",
+            suggested: "Suggested: Remove the insurance carve-out. Cover injury costs unconditionally per FDA guidance on sponsor obligations.",
+            suggestedText: "Cover injury costs unconditionally per FDA guidance on sponsor obligations.",
+            btnText: "Apply FDA-Aligned Language",
+            linkText: "View FDA Guidance"
+          },
+          {
+            severity: "amber",
+            badge: "⚠ NEGOTIATION RISK",
+            tag: "Clause 4.2",
+            title: "Mutual indemnification language absent",
+            body: "This clause indemnifies the Institution only. Industry-standard CTAs for academic medical centers include mutual indemnification. Our precedent database shows 94% of sponsors accept mutual language at AMCs without extended negotiation.",
+            suggested: "Suggested: 'Each party shall indemnify the other against claims arising from its own negligence or willful misconduct.'",
+            suggestedText: "Each party shall indemnify the other against claims arising from its own negligence or willful misconduct.",
+            btnText: "Apply Suggested Language",
+            linkText: "View 847 Precedents",
+            collapsed: true
+          },
+          {
+            severity: "emerald",
+            badge: "✓ NO ACTION REQUIRED",
+            tag: "Clause 6.3",
+            title: "Publication rights within accepted range",
+            body: "30-day sponsor review window is within the 15–45 day range accepted at 91% of academic research sites in our database. This clause requires no negotiation.",
+            stats: "15–45 days &middot; AMC accepted range &nbsp;|&nbsp; 91% &middot; acceptance rate",
+            collapsed: true
+          }
+        ]
+      },
+      {
+        progressText: "Clause analysis: 6 of 6 — Review complete",
+        progressWidth: "100%",
+        summaryText: "0 items need attention &middot; 3 approved &middot; 0 clauses remaining",
+        activeClass: "active-emerald",
+        scrollTarget: 320,
+        cards: [
+          {
+            severity: "emerald",
+            badge: "✓ NO ACTION REQUIRED",
+            tag: "Clause 6.3",
+            title: "Publication rights within accepted range",
+            body: "30-day sponsor review window is within the 15–45 day range accepted at 91% of academic research sites in our database. This clause requires no negotiation.",
+            stats: "15–45 days &middot; AMC accepted range &nbsp;|&nbsp; 91% &middot; acceptance rate"
+          },
+          {
+            severity: "amber",
+            badge: "⚠ NEGOTIATION RISK",
+            tag: "Clause 4.2",
+            title: "Mutual indemnification language absent",
+            body: "This clause indemnifies the Institution only. Industry-standard CTAs for academic medical centers include mutual indemnification. Our precedent database shows 94% of sponsors accept mutual language at AMCs without extended negotiation.",
+            suggested: "Suggested: 'Each party shall indemnify the other against claims arising from its own negligence or willful misconduct.'",
+            suggestedText: "Each party shall indemnify the other against claims arising from its own negligence or willful misconduct.",
+            btnText: "Apply Suggested Language",
+            linkText: "View 847 Precedents",
+            collapsed: true
+          },
+          {
+            severity: "red",
+            badge: "🔴 COMPLIANCE FLAG",
+            tag: "Clause 5.1",
+            title: "Subject injury coverage creates compliance exposure",
+            body: "FDA expects sponsors to cover subject injury costs regardless of the subject's insurance status. The conditional 'to the extent not covered by insurance' language conflicts with FDA guidance and was the source of delay in 62% of flagged CTAs in our dataset.",
+            suggested: "Suggested: Remove the insurance carve-out. Cover injury costs unconditionally per FDA guidance on sponsor obligations.",
+            suggestedText: "Cover injury costs unconditionally per FDA guidance on sponsor obligations.",
+            btnText: "Apply FDA-Aligned Language",
+            linkText: "View FDA Guidance",
+            collapsed: true
+          }
+        ]
+      }
+    ];
+
+    function renderReviewState() {
+      const state = reviewStates[currentReviewState];
+
+      // Update progress
+      progressStatus.textContent = state.progressText;
+      progressBar.style.width = state.progressWidth;
+      analysisSummaryText.innerHTML = state.summaryText;
+
+      // Update doc viewer styles
+      clauseBlocks.forEach((block, idx) => {
+        block.classList.remove('active-amber', 'active-red', 'active-emerald');
+        if (idx === currentReviewState) {
+          block.classList.add(state.activeClass);
+        }
+      });
+
+      // Scroll left panel
+      docViewerScroll.scrollTo({
+        top: state.scrollTarget,
+        behavior: 'smooth'
+      });
+
+      // Animate right cards out, swap, and animate back in
+      analysisWrapper.style.opacity = 0;
+      
+      setTimeout(() => {
+        analysisWrapper.innerHTML = "";
+        
+        state.cards.forEach(card => {
+          const cardEl = document.createElement('div');
+          cardEl.className = "analysis-card";
+          if (!card.collapsed) {
+            cardEl.classList.add('active');
+            cardEl.style.setProperty('--steel-highlight', `var(--${card.severity})`);
+          } else {
+            cardEl.style.opacity = "0.45";
+          }
+
+          let topRowHtml = `
+            <div class="analysis-card-top">
+              <span class="analysis-badge badge-theme-${card.severity}">${card.badge}</span>
+              <span class="analysis-tag">${card.tag}</span>
+            </div>
+          `;
+
+          let contentHtml = `
+            <h4 class="analysis-title">${card.title}</h4>
+            <p class="analysis-body">${card.body}</p>
+          `;
+
+          let actionHtml = "";
+          if (!card.collapsed) {
+            if (card.suggested) {
+              actionHtml = `
+                <div class="suggested-block ${card.severity}-border">${card.suggested}</div>
+                <div class="action-row">
+                  <button class="btn btn-suggested ${card.severity}" onclick="handleApplySuggested(this, '${encodeURIComponent(card.suggestedText)}')">${card.btnText}</button>
+                  <button class="link-action" onclick="handleSimulatedAction('${card.linkText}')">${card.linkText}</button>
+                </div>
+              `;
+            } else if (card.stats) {
+              actionHtml = `
+                <div class="analysis-stat-row">
+                  ${card.stats}
+                </div>
+              `;
+            }
+          }
+
+          cardEl.innerHTML = topRowHtml + contentHtml + actionHtml;
+          analysisWrapper.appendChild(cardEl);
+        });
+
+        analysisWrapper.style.opacity = 1;
+      }, 200);
+    }
+
+    function handleApplySuggested(button, encodedText) {
+      const text = decodeURIComponent(encodedText);
+      button.classList.add('loading');
+      
+      setTimeout(() => {
+        navigator.clipboard.writeText(text).then(() => {
+          button.classList.remove('loading');
+          showToast("Suggested language copied to clipboard", "success");
+        }).catch(err => {
+          button.classList.remove('loading');
+          showToast("Could not copy text to clipboard");
+        });
+      }, 600);
+    }
+
+    function handleSimulatedAction(title) {
+      showToast("Precedent library — available in full product");
+    }
+
+    btnNextClause.addEventListener('click', () => {
+      currentReviewState = (currentReviewState + 1) % 3;
+      renderReviewState();
+    });
+
+    document.getElementById('btn-full-report').addEventListener('click', () => {
+      showToast("Precedent library — available in full product");
+    });
+
+    // Run first render of AI review state
+    renderReviewState();
+
+    // --- Product Simulation TAB 2: Template Library & Search Filter ---
+    const templatesGrid = document.getElementById('templates-grid');
+    const templateSearch = document.getElementById('template-search');
+    const filterPillsContainer = document.getElementById('filter-pills');
+    let activeCategory = "All";
+
+    // Setup templates Data defined previously in model instructions
+    const templatesData = [
+      {
+        id: 1,
+        title: "Clinical Trial Agreement (CTA) — Phase I/II",
+        category: "Sponsor-Site",
+        tags: ["GCP", "ICH E6(R3)", "Multi-site", "FMV benchmarked"],
+        phase: "Phase 1–3",
+        updated: "May 2026 · Used in 1,240 negotiations",
+        preview: `CLINICAL TRIAL AGREEMENT
+
+This Clinical Trial Agreement ('Agreement') is entered into as of [DATE] between [SPONSOR NAME], a [STATE] corporation ('Sponsor'), and [INSTITUTION NAME] ('Institution').
+
+1. DEFINITIONS
+1.1 'Study' means the clinical investigation described in Protocol No. [PROTOCOL NUMBER], entitled '[STUDY TITLE]'...`
+      },
+      {
+        id: 2,
+        title: "CRO Master Service Agreement",
+        category: "CRO/Vendor",
+        tags: ["Milestone-based", "Change order clauses", "IP protections"],
+        phase: "Phase 1–3",
+        updated: "Jan 2026 · Used in 890 negotiations",
+        preview: `CONTRACT RESEARCH ORGANIZATION MASTER SERVICES AGREEMENT
+
+This Master Services Agreement ('MSA') is entered into between [SPONSOR] ('Sponsor') and [CRO NAME] ('CRO') as of [DATE].
+
+1. SCOPE OF SERVICES
+CRO shall provide clinical research services as detailed in individual Statements of Work ('SOW') executed hereunder...`
+      },
+      {
+        id: 3,
+        title: "Site Confidential Disclosure Agreement",
+        category: "Sponsor-Site",
+        tags: ["Mutual NDA", "30-day review", "Pre-approved fallbacks"],
+        phase: "All phases",
+        updated: "Feb 2026 · Used in 3,100 negotiations",
+        preview: `MUTUAL CONFIDENTIAL DISCLOSURE AGREEMENT
+
+This Agreement is entered into between [SPONSOR] and [SITE/INSTITUTION] (each a 'Party') for the purpose of exploring a potential clinical research collaboration.
+
+1. CONFIDENTIAL INFORMATION
+'Confidential Information' means any non-public information...`
+      },
+      {
+        id: 4,
+        title: "CMO/CDMO Manufacturing Agreement",
+        category: "Manufacturing",
+        tags: ["GMP", "Quality agreement", "Tech transfer", "Batch release"],
+        phase: "Phase 2–3",
+        updated: "Apr 2026 · Used in 445 negotiations",
+        preview: `CONTRACT MANUFACTURING ORGANIZATION AGREEMENT
+
+This Agreement governs the manufacture of [DRUG SUBSTANCE/DRUG PRODUCT] by [CMO NAME] ('Manufacturer') for [SPONSOR] ('Sponsor') in accordance with current Good Manufacturing Practice (cGMP) regulations...`
+      },
+      {
+        id: 5,
+        title: "Investigator Agreement",
+        category: "Investigator",
+        tags: ["FMV benchmarked", "FDA 1572 aligned", "Financial disclosure"],
+        phase: "Phase 1–3",
+        updated: "Mar 2026 · Used in 2,890 negotiations",
+        preview: `PRINCIPAL INVESTIGATOR AGREEMENT
+
+This Agreement is entered into between [SPONSOR] and [INVESTIGATOR NAME], M.D. ('Investigator') in connection with Protocol [NUMBER].
+
+1. INVESTIGATOR OBLIGATIONS
+Investigator agrees to conduct the Study in accordance with the protocol, ICH E6(R3) Good Clinical Practice guidelines...`
+      },
+      {
+        id: 6,
+        title: "Vendor/Laboratory Services Agreement",
+        category: "CRO/Vendor",
+        tags: ["SOW template", "Payment milestones", "IP assignment", "Data rights"],
+        phase: "All phases",
+        updated: "May 2026 · Used in 670 negotiations",
+        preview: `LABORATORY SERVICES AGREEMENT
+
+This Agreement is entered into between [SPONSOR] ('Client') and [LABORATORY NAME] ('Vendor') for the provision of laboratory and analytical services in support of [STUDY/PROGRAM NAME].
+
+1. SERVICES
+Vendor shall perform the services described in Exhibit A...`
+      }
+    ];
+
+    function renderTemplatesGrid() {
+      const query = templateSearch.value.toLowerCase().trim();
+      templatesGrid.innerHTML = "";
+
+      const filtered = templatesData.filter(item => {
+        const matchesCategory = activeCategory === "All" || item.category === activeCategory;
+        const matchesSearch = item.title.toLowerCase().includes(query) ||
+                              item.tags.some(tag => tag.toLowerCase().includes(query)) ||
+                              item.category.toLowerCase().includes(query);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        templatesGrid.innerHTML = `
+          <div class="no-match-state">
+            <p class="no-match-text">No templates match your search.</p>
+            <a href="#request-feature" class="btn btn-primary" style="height: 36px; padding: 0 16px; font-size: 0.8125rem;">Request this template &rarr;</a>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "template-card";
+
+        const tagsHtml = item.tags.map(tag => `<span class="tag-pill">${tag}</span>`).join('');
+
+        card.innerHTML = `
+          <div class="card-top-row">
+            <span class="contract-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </span>
+            <span class="phase-badge">${item.phase}</span>
+          </div>
+          <h4 class="template-title">${item.title}</h4>
+          <div class="tags-container">${tagsHtml}</div>
+          <div class="template-meta">${item.updated}</div>
+          <button class="btn btn-preview" onclick="openPreviewModal(${item.id}, this)">Preview Template &rarr;</button>
+        `;
+
+        templatesGrid.appendChild(card);
+      });
+    }
+
+    // Live search event
+    templateSearch.addEventListener('input', renderTemplatesGrid);
+
+    // Pill clicks
+    filterPillsContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('filter-pill')) {
+        const pills = filterPillsContainer.querySelectorAll('.filter-pill');
+        pills.forEach(pill => pill.classList.remove('active'));
+        
+        e.target.classList.add('active');
+        activeCategory = e.target.getAttribute('data-category');
+        renderTemplatesGrid();
+      }
+    });
+
+    // Render templates initially
+    renderTemplatesGrid();
+
+    // --- Modal Implementation (Preview Template Modal) ---
+    const modalOverlay = document.getElementById('preview-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalPhase = document.getElementById('modal-phase-badge');
+    const modalBodyText = document.getElementById('modal-body-text');
+    const modalClose = document.getElementById('modal-close');
+    const modalCloseFooter = document.getElementById('modal-close-footer');
+    const modalWaitlistCTA = document.getElementById('modal-waitlist-cta');
+    let lastActiveElement = null;
+
+    function openPreviewModal(id, triggerElement) {
+      const template = templatesData.find(item => item.id === id);
+      if (!template) return;
+
+      lastActiveElement = triggerElement;
+
+      // Populate details
+      modalTitle.textContent = template.title;
+      modalPhase.textContent = template.phase;
+      modalBodyText.textContent = template.preview;
+
+      // Open Modal
+      modalOverlay.style.display = 'flex';
+      body.classList.add('overlay-open');
+      modalOverlay.setAttribute('aria-hidden', 'false');
+      
+      setTimeout(() => {
+        modalOverlay.classList.add('open');
+        // Set focus inside modal
+        modalClose.focus();
+      }, 50);
+
+      // Add escape key handler
+      document.addEventListener('keydown', handleModalKeydown);
+    }
+
+    function closePreviewModal() {
+      modalOverlay.classList.remove('open');
+      body.classList.remove('overlay-open');
+      modalOverlay.setAttribute('aria-hidden', 'true');
+      
+      setTimeout(() => {
+        modalOverlay.style.display = 'none';
+        if (lastActiveElement) {
+          lastActiveElement.focus();
+        }
+      }, 300);
+
+      document.removeEventListener('keydown', handleModalKeydown);
+    }
+
+    function handleModalKeydown(e) {
+      if (e.key === 'Escape') {
+        closePreviewModal();
+      }
+      
+      // Focus trapping
+      if (e.key === 'Tab') {
+        const focusableElements = [modalClose, modalWaitlistCTA, modalCloseFooter];
+        const first = focusableElements[0];
+        const last = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            last.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === last) {
+            first.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    }
+
+    // Modal click events
+    modalClose.addEventListener('click', closePreviewModal);
+    modalCloseFooter.addEventListener('click', closePreviewModal);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        closePreviewModal();
+      }
+    });
+
+    modalWaitlistCTA.addEventListener('click', () => {
+      closePreviewModal();
+      // Scroll to waitlist form
+      document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // --- Features Staggered Entry Animation ---
+    const featuresGrid = document.querySelector('.features-grid');
+    const featuresObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const cards = entry.target.querySelectorAll('.feature-card');
+          cards.forEach((card, index) => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              card.classList.add('visible');
+            } else {
+              setTimeout(() => {
+                card.classList.add('visible');
+              }, index * 60);
+            }
+          });
+          featuresObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    if (featuresGrid) {
+      featuresObserver.observe(featuresGrid);
+    }
+
+    // --- Forms Domain and Regex Validation ---
+    const blockedDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'me.com'];
+
+    function validateEmailDomain(email) {
+      const parts = email.trim().toLowerCase().split('@');
+      if (parts.length < 2) return false;
+      return !blockedDomains.includes(parts[1]);
+    }
+
+    function validateEmailFormat(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email.trim());
+    }
+
+    // Set up form blur validations
+    const waitlistEmail = document.getElementById('waitlist-email');
+    const waitlistEmailError = document.getElementById('waitlist-email-error');
+    
+    function validateEmailInput(input, errorElement) {
+      const value = input.value.trim();
+      input.classList.remove('invalid');
+      errorElement.style.display = 'none';
+
+      if (!value) {
+        input.classList.add('invalid');
+        errorElement.textContent = "This field is required.";
+        errorElement.style.display = 'block';
+        input.setAttribute('aria-invalid', 'true');
+        return false;
+      } else if (!validateEmailFormat(value)) {
+        input.classList.add('invalid');
+        errorElement.textContent = "Please enter a valid email address.";
+        errorElement.style.display = 'block';
+        input.setAttribute('aria-invalid', 'true');
+        return false;
+      } else if (!validateEmailDomain(value)) {
+        input.classList.add('invalid');
+        errorElement.textContent = "Please use your company email address.";
+        errorElement.style.display = 'block';
+        input.setAttribute('aria-invalid', 'true');
+        return false;
+      }
+      input.setAttribute('aria-invalid', 'false');
+      return true;
+    }
+
+    waitlistEmail.addEventListener('blur', () => {
+      validateEmailInput(waitlistEmail, waitlistEmailError);
+    });
+
+    const featureEmail = document.getElementById('feature-email');
+    const featureEmailError = document.getElementById('feature-email-error');
+    
+    featureEmail.addEventListener('blur', () => {
+      validateEmailInput(featureEmail, featureEmailError);
+    });
+
+    // Set up general text inputs validation
+    function validateTextInput(input, errorElement, minLength = 0) {
+      const value = input.value.trim();
+      input.classList.remove('invalid');
+      errorElement.style.display = 'none';
+
+      if (!value) {
+        input.classList.add('invalid');
+        errorElement.textContent = "This field is required.";
+        errorElement.style.display = 'block';
+        input.setAttribute('aria-invalid', 'true');
+        return false;
+      } else if (minLength > 0 && value.length < minLength) {
+        input.classList.add('invalid');
+        errorElement.textContent = `Please enter at least ${minLength} characters.`;
+        errorElement.style.display = 'block';
+        input.setAttribute('aria-invalid', 'true');
+        return false;
+      }
+      input.setAttribute('aria-invalid', 'false');
+      return true;
+    }
+
+    const waitlistName = document.getElementById('waitlist-name');
+    const waitlistNameError = document.getElementById('waitlist-name-error');
+    waitlistName.addEventListener('blur', () => validateTextInput(waitlistName, waitlistNameError));
+
+    const waitlistCompany = document.getElementById('waitlist-company');
+    const waitlistCompanyError = document.getElementById('waitlist-company-error');
+    waitlistCompany.addEventListener('blur', () => validateTextInput(waitlistCompany, waitlistCompanyError));
+
+    const waitlistRole = document.getElementById('waitlist-role');
+    const waitlistRoleError = document.getElementById('waitlist-role-error');
+    waitlistRole.addEventListener('blur', () => validateTextInput(waitlistRole, waitlistRoleError));
+
+    const waitlistPhase = document.getElementById('waitlist-phase');
+    const waitlistPhaseError = document.getElementById('waitlist-phase-error');
+    waitlistPhase.addEventListener('blur', () => validateTextInput(waitlistPhase, waitlistPhaseError));
+
+    const featureDesc = document.getElementById('feature-desc');
+    const featureDescError = document.getElementById('feature-desc-error');
+    featureDesc.addEventListener('blur', () => validateTextInput(featureDesc, featureDescError, 20));
+
+    // Handle waitlist form submit
+    const waitlistForm = document.getElementById('waitlist-form');
+    const waitlistSubmitBtn = document.getElementById('waitlist-submit-btn');
+    const waitlistSubmitError = document.getElementById('waitlist-submit-error');
+    const waitlistContainer = document.getElementById('waitlist-form-container');
+
+    waitlistForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const vName = validateTextInput(waitlistName, waitlistNameError);
+      const vEmail = validateEmailInput(waitlistEmail, waitlistEmailError);
+      const vCompany = validateTextInput(waitlistCompany, waitlistCompanyError);
+      const vRole = validateTextInput(waitlistRole, waitlistRoleError);
+      const vPhase = validateTextInput(waitlistPhase, waitlistPhaseError);
+
+      if (!vName || !vEmail || !vCompany || !vRole || !vPhase) {
+        return;
+      }
+
+      // Valid: disable button and submit
+      waitlistSubmitBtn.disabled = true;
+      waitlistSubmitBtn.innerHTML = `
+        <svg class="spinner-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true" style="margin-right: 8px;">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+          <path d="M4 12a8 8 0 0 1 8-8"></path>
+        </svg>
+        <span>Submitting...</span>
+      `;
+      waitlistSubmitError.style.display = 'none';
+
+      const formData = new FormData(waitlistForm);
+      const payload = {};
+      formData.forEach((value, key) => payload[key] = value);
+
+      fetch(waitlistForm.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (response.ok) {
+          // Success state override
+          waitlistContainer.innerHTML = `
+            <div class="success-view">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <h3 class="success-title">You're on the list.</h3>
+              <p class="success-body">You're on the founding cohort list. We'll reach out soon. In the meantime, explore what TrialPact can do in the simulation above.</p>
+              <a href="#simulation" class="btn btn-primary" style="height: 40px; padding: 0 20px; font-size: 0.875rem;">&uarr; Back to Simulation</a>
+            </div>
+          `;
+        } else {
+          throw new Error("Formspree response not OK");
+        }
+      })
+      .catch(error => {
+        waitlistSubmitError.textContent = "Something went wrong. Please try again or email us at info@virsaisolutions.com";
+        waitlistSubmitError.style.display = 'block';
+        waitlistSubmitBtn.disabled = false;
+        waitlistSubmitBtn.innerHTML = `<span>Claim Founding Spot &rarr;</span>`;
+      });
+    });
+
+    // Handle feature request form submit
+    const featureForm = document.getElementById('feature-form');
+    const featureSubmitBtn = document.getElementById('feature-submit-btn');
+    const featureSubmitError = document.getElementById('feature-submit-error');
+    const featureContainer = document.getElementById('feature-form-container');
+
+    featureForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const vEmail = validateEmailInput(featureEmail, featureEmailError);
+      const vDesc = validateTextInput(featureDesc, featureDescError, 20);
+
+      if (!vEmail || !vDesc) {
+        return;
+      }
+
+      // Valid: disable button and submit
+      featureSubmitBtn.disabled = true;
+      featureSubmitBtn.innerHTML = `
+        <svg class="spinner-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true" style="margin-right: 8px;">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+          <path d="M4 12a8 8 0 0 1 8-8"></path>
+        </svg>
+        <span>Submitting...</span>
+      `;
+      featureSubmitError.style.display = 'none';
+
+      const formData = new FormData(featureForm);
+      const payload = {};
+      formData.forEach((value, key) => payload[key] = value);
+
+      fetch(featureForm.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (response.ok) {
+          featureContainer.innerHTML = `
+            <div class="success-view">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <h3 class="success-title" style="font-size: 1.5rem; margin-top: 12px;">Request Submitted</h3>
+              <p class="success-body" style="font-size: 0.9375rem; max-width: 320px; margin-bottom: 0;">Received. We'll follow up within 5 business days.</p>
+            </div>
+          `;
+        } else {
+          throw new Error("Formspree response not OK");
+        }
+      })
+      .catch(error => {
+        featureSubmitError.textContent = "Something went wrong. Please try again or email us at info@virsaisolutions.com";
+        featureSubmitError.style.display = 'block';
+        featureSubmitBtn.disabled = false;
+        featureSubmitBtn.innerHTML = `<span>Submit Feature Request &rarr;</span>`;
+      });
+    });
+  </script>
+</body>
+</html>
